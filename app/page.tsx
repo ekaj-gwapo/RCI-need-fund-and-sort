@@ -8,23 +8,40 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-white">
       {/* Navigation */}
       <nav className="border-b border-emerald-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="w-full px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
               T
             </div>
             <span className="text-xl font-bold text-emerald-900">Report of Checks Issued</span>
           </div>
-          <Link href="/auth/login">
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              Login
-            </Button>
-          </Link>
+          <div className="flex items-center gap-4">
+            {/* Logo placeholders - 3 logos */}
+            <div className="flex items-center gap-3">
+              {/* Logo 1 */}
+              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+                Logo 1
+              </div>
+              {/* Logo 2 */}
+              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+                Logo 2
+              </div>
+              {/* Logo 3 */}
+              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+                Logo 3
+              </div>
+            </div>
+            <Link href="/auth/login">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                Login
+              </Button>
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
+      <section className="w-full px-6 py-20 text-center">
         <div className="space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold text-emerald-900 leading-tight">
             Checked & Issued Reports System
@@ -42,7 +59,7 @@ export default function Home() {
 
       {/* Features Section */}
       <section className="bg-white py-20">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="w-full px-6">
           <h2 className="text-3xl font-bold text-emerald-900 text-center mb-12">
             Designed for Efficiency
           </h2>
@@ -96,7 +113,7 @@ export default function Home() {
 
       {/* Demo Credentials Section */}
       <section className="bg-emerald-600 py-20">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="w-full px-6">
           <h2 className="text-3xl font-bold text-white text-center mb-12">Try It Now</h2>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Entry User Demo */}
@@ -154,7 +171,7 @@ export default function Home() {
 
       {/* Security Section */}
       <section className="bg-emerald-50 py-20">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="w-full px-6">
           <div className="flex gap-6 items-start">
             <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
               <Lock className="w-6 h-6 text-white" />
@@ -177,7 +194,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-emerald-100 bg-white py-8">
-        <div className="max-w-6xl mx-auto px-6 text-center text-gray-600">
+        <div className="w-full px-6 text-center text-gray-600">
           <p>© 2026 Transaction Hub. Built for modern financial workflows.</p>
         </div>
       </footer>
