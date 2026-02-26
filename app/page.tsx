@@ -8,31 +8,31 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-white via-emerald-50 to-white">
       {/* Navigation */}
       <nav className="border-b border-emerald-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="w-full px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">
+        <div className="w-full px-8 py-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-2xl">
               T
             </div>
-            <span className="text-xl font-bold text-emerald-900">Report of Checks Issued</span>
+            <span className="text-3xl font-bold text-emerald-900">Report of Checks Issued</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {/* Logo placeholders - 3 logos */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {/* Logo 1 */}
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-600 font-semibold">
                 Logo 1
               </div>
               {/* Logo 2 */}
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-600 font-semibold">
                 Logo 2
               </div>
               {/* Logo 3 */}
-              <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-xs text-gray-600 font-semibold">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-sm text-gray-600 font-semibold">
                 Logo 3
               </div>
             </div>
             <Link href="/auth/login">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 text-lg">
                 Login
               </Button>
             </Link>
