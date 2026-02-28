@@ -52,7 +52,7 @@ export default function Home() {
   />
 
   {/* White fade overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/60 to-white backdrop-blur-sm" />
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white backdrop-blur-sm" />
 
   {/* Content */}
   <div className="relative z-10 space-y-6">
