@@ -28,15 +28,12 @@ type Transaction = {
   fund: string
 }
 
-type SortField = 'date' | 'controlNumber' | 'amount' | 'accountCode' | 'fund'
-
 export default function ViewerDashboard() {
   const [user, setUser] = useState<any>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([])
   const [assignedEntryUsers, setAssignedEntryUsers] = useState<any[]>([])
   const [selectedEntryUser, setSelectedEntryUser] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<SortField>('date')
   const [isLoading, setIsLoading] = useState(true)
   const [selectedEntryUserEmail, setSelectedEntryUserEmail] = useState<string>('')
   const [bankNames, setBankNames] = useState<string[]>([])
@@ -53,8 +50,6 @@ export default function ViewerDashboard() {
     'Hospital Fund',
     'MOPH'
   ]
-
-  // Note: sortBy state kept for backward compatibility but Sort By UI removed
 
   useEffect(() => {
     const checkAuth = () => {
@@ -102,7 +97,7 @@ export default function ViewerDashboard() {
         const data = await response.json()
         setAllTransactions(data)
         extractBankNames(data)
-        setSortedTransactions(data)
+        applyFilters(data)
       }
     } catch (error) {
       console.error('Error fetching transactions:', error)
@@ -114,7 +109,7 @@ export default function ViewerDashboard() {
     setBankNames(names.sort())
   }
 
-  const applyFiltersAndSort = (data: Transaction[]) => {
+  const applyFilters = (data: Transaction[]) => {
     let filtered = [...data]
     
     if (selectedBankName) {
@@ -131,41 +126,16 @@ export default function ViewerDashboard() {
       filtered = filtered.filter(tx => tx.fund === selectedFund)
     }
 
-    let sorted = [...filtered]
-    switch (sortBy) {
-      case 'date':
-        sorted.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        break
-      case 'controlNumber':
-        sorted.sort((a, b) => a.controlNumber.localeCompare(b.controlNumber))
-        break
-      case 'amount':
-        sorted.sort((a, b) => b.amount - a.amount)
-        break
-      case 'accountCode':
-        sorted.sort((a, b) => a.accountCode.localeCompare(b.accountCode))
-        break
-      case 'fund':
-        sorted.sort((a, b) => a.fund.localeCompare(b.fund))
-        break
-    }
+    // Sort by date (newest first) as default
+    const sorted = [...filtered].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     setTransactions(sorted)
-  }
-
-  const setSortedTransactions = (data: Transaction[]) => {
-    applyFiltersAndSort(data)
-  }
-
-  const handleSortChange = (field: SortField) => {
-    setSortBy(field)
-    applyFiltersAndSort(allTransactions)
   }
 
   useEffect(() => {
     if (allTransactions.length > 0) {
-      applyFiltersAndSort(allTransactions)
+      applyFilters(allTransactions)
     }
-  }, [selectedBankName, selectedDate, selectedFund, sortBy, allTransactions])
+  }, [selectedBankName, selectedDate, selectedFund, allTransactions])
 
   const handleLogout = () => {
     localStorage.removeItem('user')
