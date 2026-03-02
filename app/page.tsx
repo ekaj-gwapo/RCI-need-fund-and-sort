@@ -45,14 +45,14 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative w-full px-6 py-24 text-center overflow-hidden">
+      <section className="relative w-full px-100 py-24 text-center overflow-hidden">
         <div
     className="absolute inset-0 bg-cover bg-center"
     style={{ backgroundImage: "url('/bg.jpg')" }}
   />
 
   {/* White fade overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-white backdrop-blur-sm" />
+  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/1 to-white backdrop-blur-sm" />
 
   {/* Content */}
   <div className="relative z-10 space-y-6">
