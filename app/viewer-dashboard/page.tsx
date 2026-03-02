@@ -28,15 +28,12 @@ type Transaction = {
   fund: string
 }
 
-type SortField = 'date' | 'controlNumber' | 'amount' | 'accountCode' | 'fund'
-
 export default function ViewerDashboard() {
   const [user, setUser] = useState<any>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([])
   const [assignedEntryUsers, setAssignedEntryUsers] = useState<any[]>([])
   const [selectedEntryUser, setSelectedEntryUser] = useState<string | null>(null)
-  const [sortBy, setSortBy] = useState<SortField>('date')
   const [isLoading, setIsLoading] = useState(true)
   const [selectedEntryUserEmail, setSelectedEntryUserEmail] = useState<string>('')
   const [bankNames, setBankNames] = useState<string[]>([])
@@ -100,7 +97,7 @@ export default function ViewerDashboard() {
         const data = await response.json()
         setAllTransactions(data)
         extractBankNames(data)
-        setSortedTransactions(data)
+        applyFilters(data)
       }
     } catch (error) {
       console.error('Error fetching transactions:', error)
@@ -112,7 +109,7 @@ export default function ViewerDashboard() {
     setBankNames(names.sort())
   }
 
-  const applyFiltersAndSort = (data: Transaction[]) => {
+  const applyFilters = (data: Transaction[]) => {
     let filtered = [...data]
     
     if (selectedBankName) {
@@ -129,41 +126,16 @@ export default function ViewerDashboard() {
       filtered = filtered.filter(tx => tx.fund === selectedFund)
     }
 
-    let sorted = [...filtered]
-    switch (sortBy) {
-      case 'date':
-        sorted.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        break
-      case 'controlNumber':
-        sorted.sort((a, b) => a.controlNumber.localeCompare(b.controlNumber))
-        break
-      case 'amount':
-        sorted.sort((a, b) => b.amount - a.amount)
-        break
-      case 'accountCode':
-        sorted.sort((a, b) => a.accountCode.localeCompare(b.accountCode))
-        break
-      case 'fund':
-        sorted.sort((a, b) => a.fund.localeCompare(b.fund))
-        break
-    }
+    // Sort by date (newest first) as default
+    const sorted = [...filtered].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     setTransactions(sorted)
-  }
-
-  const setSortedTransactions = (data: Transaction[]) => {
-    applyFiltersAndSort(data)
-  }
-
-  const handleSortChange = (field: SortField) => {
-    setSortBy(field)
-    applyFiltersAndSort(allTransactions)
   }
 
   useEffect(() => {
     if (allTransactions.length > 0) {
-      applyFiltersAndSort(allTransactions)
+      applyFilters(allTransactions)
     }
-  }, [selectedBankName, selectedDate, selectedFund, sortBy, allTransactions])
+  }, [selectedBankName, selectedDate, selectedFund, allTransactions])
 
   const handleLogout = () => {
     localStorage.removeItem('user')
@@ -191,15 +163,6 @@ export default function ViewerDashboard() {
             <p className="text-sm text-gray-600">{user?.email}</p>
           </div>
           <div className="flex gap-2">
-            <Link href="/settings">
-              <Button
-                variant="outline"
-                className="text-emerald-600 border-emerald-300 hover:bg-emerald-50"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </Button>
-            </Link>
             <Button
               onClick={handleLogout}
               variant="outline"
@@ -214,9 +177,9 @@ export default function ViewerDashboard() {
 
       {/* Main Content */}
       <div className="w-full px-6 py-8">
-        {/* Filters and Sorting */}
+        {/* Filters */}
         <div className="bg-white rounded-lg p-6 mb-8 border border-emerald-100">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Bank Name
@@ -260,25 +223,6 @@ export default function ViewerDashboard() {
                   {fundOptions.map(option => (
                     <option key={option} value={option}>{option}</option>
                   ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Sort By
-              </label>
-              <div className="relative">
-                <select
-                  value={sortBy}
-                  onChange={(e) => handleSortChange(e.target.value as SortField)}
-                  className="w-full appearance-none rounded-lg border border-emerald-200 bg-white px-4 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-600 pr-10"
-                >
-                  <option value="date">Date</option>
-                  <option value="controlNumber">Control Number</option>
-                  <option value="amount">Amount</option>
-                  <option value="accountCode">Account Code</option>
-                  <option value="fund">Fund</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
               </div>

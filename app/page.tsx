@@ -21,18 +21,18 @@ export default function Home() {
             <div className="flex items-center gap-4">
               {/* Logo 1 */}
               <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-    <Image src="/logos/logo1.jpg" alt="Logo 1" width={64} height={64} />
+    <Image src="/logos/logo4.png" alt="Logo 4" width={64} height={64} />
   </div>
               {/* Logo 2 */}
-               <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden">
-    <Image src="/logos/logo2.png" alt="Logo 2" width={100} height={100} className="object-contain" />
+               <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+    <Image src="/logos/logo3.jpg" alt="Logo 4" width={64} height={64} />
   </div>
               {/* Logo 3 */}
               <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-    <Image src="/logos/logo3.jpg" alt="Logo 3" width={64} height={64} />
+    <Image src="/logos/logo1.jpg" alt="Logo 3" width={64} height={64} />
   </div>
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-    <Image src="/logos/logo4.png" alt="Logo 4" width={64} height={64} />
+              <div className="w-16 h-16 rounded-full bg-white shadow-lg flex hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 items-center justify-center overflow-hidden">
+    <Image src="/logos/logo2.png" alt="Logo 2" width={100} height={100} className="object-contain" />
   </div>
             </div>
             <Link href="/auth/login">
