@@ -263,7 +263,15 @@ export default function EntryDashboard() {
         </Card>
 
         {/* Transaction Table */}
-        <TransactionTable transactions={transactions} />
+        <TransactionTable
+          transactions={transactions}
+          onTransactionDeleted={() => {
+            if (user?.id) fetchTransactions(user.id)
+          }}
+          onTransactionUpdated={() => {
+            if (user?.id) fetchTransactions(user.id)
+          }}
+        />
       </div>
     </div>
   )
