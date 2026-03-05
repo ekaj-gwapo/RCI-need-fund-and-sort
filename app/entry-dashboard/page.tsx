@@ -25,6 +25,7 @@ type Transaction = {
   debit: number
   credit: number
   remarks: string
+  fund: string
   createdAt: string
 }
 

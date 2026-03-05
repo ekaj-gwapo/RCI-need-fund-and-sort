@@ -174,7 +174,7 @@ export async function PUT(request: NextRequest) {
     }
 
     await db.run(
-      `UPDATE transactions SET bankName = ?, payee = ?, address = ?, dvNumber = ?, particulars = ?, amount = ?, date = ?, controlNumber = ?, accountCode = ?, debit = ?, credit = ?, remarks = ? WHERE id = ?`,
+      `UPDATE transactions SET bankName = ?, payee = ?, address = ?, dvNumber = ?, particulars = ?, amount = ?, date = ?, controlNumber = ?, accountCode = ?, debit = ?, credit = ?, remarks = ?, fund = ? WHERE id = ?`,
       [
         body.bankName.trim(),
         body.payee.trim(),
@@ -188,6 +188,7 @@ export async function PUT(request: NextRequest) {
         parseFloat(body.debit || 0),
         parseFloat(body.credit || 0),
         body.remarks ? body.remarks.trim() : '',
+        body.fund ? body.fund.trim() : 'General Fund',
         id
       ]
     )
