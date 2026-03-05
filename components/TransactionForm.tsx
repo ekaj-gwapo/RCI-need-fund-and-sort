@@ -38,7 +38,7 @@ export default function TransactionForm({ userId, onSuccess }: TransactionFormPr
     'MOPH'
   ]
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -140,37 +140,34 @@ export default function TransactionForm({ userId, onSuccess }: TransactionFormPr
       </div>
 
       <div>
-        <Label htmlFor="address">Address *</Label>
+        <Label htmlFor="address">Address</Label>
         <Input
           id="address"
           name="address"
           value={formData.address}
           onChange={handleChange}
-          required
           placeholder="Enter address"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="dv_number">DV Number *</Label>
+          <Label htmlFor="dv_number">DV Number</Label>
           <Input
             id="dv_number"
             name="dv_number"
             value={formData.dv_number}
             onChange={handleChange}
-            required
             placeholder="Enter DV number"
           />
         </div>
         <div>
-          <Label htmlFor="control_number">Control Number *</Label>
+          <Label htmlFor="control_number">Control Number</Label>
           <Input
             id="control_number"
             name="control_number"
             value={formData.control_number}
             onChange={handleChange}
-            required
             placeholder="Enter control number"
           />
         </div>
