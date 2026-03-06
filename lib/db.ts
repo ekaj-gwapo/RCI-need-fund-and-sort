@@ -59,4 +59,11 @@ export async function initDb() {
       FOREIGN KEY (entryUserId) REFERENCES users(id) ON DELETE CASCADE
     );
   `);
+
+  // Add fund column if it doesn't exist (migration for existing databases)
+  try {
+    await db.run('ALTER TABLE transactions ADD COLUMN fund TEXT DEFAULT "General Fund"');
+  } catch (error) {
+    // Column already exists, ignore error
+  }
 }

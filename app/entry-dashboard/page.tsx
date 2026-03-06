@@ -25,6 +25,7 @@ type Transaction = {
   debit: number
   credit: number
   remarks: string
+  fund: string
   createdAt: string
 }
 
@@ -147,6 +148,15 @@ export default function EntryDashboard() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Link href="/settings">
+              <Button
+                variant="outline"
+                className="text-emerald-600 border-emerald-300 hover:bg-emerald-50"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Settings
+              </Button>
+            </Link>
             <Button
               onClick={handleLogout}
               variant="outline"
@@ -161,16 +171,7 @@ export default function EntryDashboard() {
 
       {/* Main Content */}
       <div className="w-full px-6 py-8 flex flex-col gap-8">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
-          <Button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            {showForm ? 'Hide Form' : 'Add Transaction'}
-          </Button>
-        </div>
+        
 
         {/* Transaction Form */}
         {showForm && (
@@ -253,8 +254,31 @@ export default function EntryDashboard() {
           </CardContent>
         </Card>
 
+        {/* Transactions Header */}
+<div className="flex justify-between items-center mb-4">
+  <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
+
+  <Button
+    onClick={() => setShowForm(!showForm)}
+    className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-2"
+  >
+    <Plus className="w-4 h-4" />
+    {showForm ? 'Hide Form' : 'Add Transaction'}
+  </Button>
+</div>
+
+        
+
         {/* Transaction Table */}
-        <TransactionTable transactions={transactions} />
+        <TransactionTable
+          transactions={transactions}
+          onTransactionDeleted={() => {
+            if (user?.id) fetchTransactions(user.id)
+          }}
+          onTransactionUpdated={() => {
+            if (user?.id) fetchTransactions(user.id)
+          }}
+        />
       </div>
     </div>
   )
