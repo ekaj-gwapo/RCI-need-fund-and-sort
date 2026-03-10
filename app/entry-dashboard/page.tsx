@@ -143,7 +143,7 @@ export default function EntryDashboard() {
               <img src={logo} alt="Logo" className="h-10 w-10 object-contain" />
             )}
             <div>
-              <h1 className="text-2xl font-bold text-emerald-900">Data Entry Dashboard</h1>
+              <h1 className="text-2xl font-bold text-emerald-900">Data Entry</h1>
               <p className="text-sm text-gray-600">{user?.email}</p>
             </div>
           </div>
