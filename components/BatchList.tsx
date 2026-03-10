@@ -49,13 +49,18 @@ export default function BatchList({ viewerId, onSelectBatch }: BatchListProps) {
             const createdDate = new Date(batch.createdAt)
             const month = createdDate.toLocaleDateString('en-US', { month: 'long' })
             
+            // Get the primary fund and bank from arrays or single values
+            const funds = filters.funds || (filters.fund ? [filters.fund] : [])
+            const banks = filters.bankNames || (filters.bankName ? [filters.bankName] : [])
+            
             return {
               ...batch,
-              fund: filters.fund || 'General Fund',
-              bankName: filters.bankName || 'All Banks',
+              fund: Array.isArray(funds) ? funds[0] || 'General Fund' : funds || 'General Fund',
+              bankName: Array.isArray(banks) ? banks[0] || 'All Banks' : banks || 'All Banks',
               month: month,
             }
-          } catch {
+          } catch (err) {
+            console.log('[v0] Error parsing filters:', err)
             return {
               ...batch,
               fund: 'General Fund',
@@ -67,12 +72,26 @@ export default function BatchList({ viewerId, onSelectBatch }: BatchListProps) {
         
         setBatches(batchesWithMetadata)
         
-        // Extract unique funds and banks for filters
-        const uniqueFunds = ['', ...new Set(batchesWithMetadata.map((b: Batch) => b.fund))]
-        const uniqueBanks = ['', ...new Set(batchesWithMetadata.map((b: Batch) => b.bankName))]
+        // Extract all unique funds and banks from all batches
+        const allFunds = new Set<string>()
+        const allBanks = new Set<string>()
         
-        setFunds(uniqueFunds as string[])
-        setBanks(uniqueBanks as string[])
+        batchesWithMetadata.forEach((batch: Batch) => {
+          try {
+            const filters = JSON.parse(batch.appliedFilters || '{}')
+            if (filters.funds && Array.isArray(filters.funds)) {
+              filters.funds.forEach((f: string) => allFunds.add(f))
+            }
+            if (filters.bankNames && Array.isArray(filters.bankNames)) {
+              filters.bankNames.forEach((b: string) => allBanks.add(b))
+            }
+          } catch {
+            // Skip parsing errors
+          }
+        })
+        
+        setFunds(Array.from(allFunds).sort())
+        setBanks(Array.from(allBanks).sort())
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred')
       } finally {

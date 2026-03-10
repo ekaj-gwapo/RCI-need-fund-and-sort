@@ -153,6 +153,10 @@ export default function ViewerDashboard() {
     try {
       setIsCreatingBatch(true)
 
+      // Extract unique banks and funds from transactions
+      const uniqueBanks = [...new Set(transactions.map((tx: any) => tx.bankName))].filter(Boolean)
+      const uniqueFunds = [...new Set(transactions.map((tx: any) => tx.fund))].filter(Boolean)
+
       // Create batch
       const batchResponse = await fetch('/api/batches', {
         method: 'POST',
@@ -162,9 +166,9 @@ export default function ViewerDashboard() {
           entryUserId: selectedEntryUser,
           transactions: transactions,
           appliedFilters: {
-            bankName: selectedBankName,
+            bankNames: uniqueBanks,
+            funds: uniqueFunds,
             date: selectedDate,
-            fund: selectedFund,
           },
         }),
       })
