@@ -59,6 +59,14 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString()
     const filterStr = JSON.stringify(appliedFilters || {})
 
+    // Get the count of batches for this viewer to generate sequential number
+    const batchCount = await db.get(
+      `SELECT COUNT(*) as count FROM transaction_batches WHERE viewerId = ?`,
+      [viewerId]
+    )
+    const sequentialNumber = String(batchCount.count + 1).padStart(2, '0')
+    const batchName = `Batch ${sequentialNumber}`
+
     // Create batch record
     await db.run(
       `INSERT INTO transaction_batches (id, viewerId, entryUserId, batchName, transactionCount, totalAmount, appliedFilters, createdAt)
@@ -67,7 +75,7 @@ export async function POST(request: NextRequest) {
         batchId,
         viewerId,
         entryUserId,
-        `Batch ${batchId.slice(0, 8)}`,
+        batchName,
         transactions.length,
         totalAmount,
         filterStr,
@@ -75,7 +83,7 @@ export async function POST(request: NextRequest) {
       ]
     )
 
-    // Create batch transaction records
+    // Create batch transaction records and delete from main transactions table
     for (const tx of transactions) {
       const txId = randomUUID()
       await db.run(
@@ -88,6 +96,12 @@ export async function POST(request: NextRequest) {
           JSON.stringify(tx),
           now,
         ]
+      )
+
+      // Delete the transaction from main transactions table
+      await db.run(
+        `DELETE FROM transactions WHERE id = ?`,
+        [tx.id]
       )
     }
 

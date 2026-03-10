@@ -39,10 +39,7 @@ export async function GET(
       batchTransactionId: bt.id,
     }))
 
-    return NextResponse.json({
-      batch,
-      transactions,
-    })
+    return NextResponse.json(transactions)
   } catch (error) {
     console.error('Error fetching batch details:', error)
     return NextResponse.json(
@@ -89,6 +86,8 @@ export async function POST(
 
     // Restore transactions back to main transactions table
     const restoredTransactions = []
+    const batchTxIds = []
+    
     for (const batchTx of batchTxs) {
       const txData = JSON.parse(batchTx.transactionData)
       
@@ -117,6 +116,28 @@ export async function POST(
       )
 
       restoredTransactions.push(txData)
+      batchTxIds.push(txData.id)
+    }
+
+    // Remove restored transactions from batch_transactions table
+    if (batchTxIds.length > 0) {
+      const placeholders = batchTxIds.map(() => '?').join(',')
+      await db.run(
+        `DELETE FROM batch_transactions WHERE batchId = ? AND transactionId IN (${placeholders})`,
+        [batchId, ...batchTxIds]
+      )
+
+      // Update batch count and amount
+      const updatedBatch = await db.get(
+        `SELECT COUNT(*) as count, COALESCE(SUM(CAST(json_extract(transactionData, '$.amount') AS REAL)), 0) as total 
+         FROM batch_transactions WHERE batchId = ?`,
+        [batchId]
+      )
+
+      await db.run(
+        `UPDATE transaction_batches SET transactionCount = ?, totalAmount = ? WHERE id = ?`,
+        [updatedBatch.count, updatedBatch.total, batchId]
+      )
     }
 
     return NextResponse.json({
