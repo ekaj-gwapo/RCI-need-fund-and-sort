@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import ViewerTransactionTable from '@/components/ViewerTransactionTable'
 import PrintReport from '@/components/PrintReport'
-import { LogOut, ChevronDown, Settings, Printer } from 'lucide-react'
+import { LogOut, ChevronDown, Settings, Printer, Archive } from 'lucide-react'
 import Link from 'next/link'
 
 type Transaction = {
@@ -40,6 +40,8 @@ export default function ViewerDashboard() {
   const [selectedBankName, setSelectedBankName] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedFund, setSelectedFund] = useState<string>('')
+  const [batchId, setBatchId] = useState<string | null>(null)
+  const [isCreatingBatch, setIsCreatingBatch] = useState(false)
   const printRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
@@ -140,6 +142,59 @@ export default function ViewerDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('user')
     router.push('/auth/login')
+  }
+
+  const createBatchAndPrint = async () => {
+    if (!user || !selectedEntryUser || transactions.length === 0) {
+      alert('No transactions to print')
+      return
+    }
+
+    try {
+      setIsCreatingBatch(true)
+
+      // Create batch
+      const batchResponse = await fetch('/api/batches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          viewerId: user.id,
+          entryUserId: selectedEntryUser,
+          transactions: transactions,
+          appliedFilters: {
+            bankName: selectedBankName,
+            date: selectedDate,
+            fund: selectedFund,
+          },
+        }),
+      })
+
+      if (!batchResponse.ok) {
+        throw new Error('Failed to create batch')
+      }
+
+      const batch = await batchResponse.json()
+      setBatchId(batch.id)
+
+      // Show success message
+      const msg = `Batch created successfully! ID: ${batch.id.slice(0, 8)}`
+      alert(msg)
+
+      // Open print dialog
+      setTimeout(() => {
+        const printWindow = window.open('', '', 'height=1000,width=1200')
+        if (printWindow && printRef.current) {
+          printWindow.document.write(printRef.current.outerHTML)
+          printWindow.document.close()
+          printWindow.print()
+        }
+      }, 500)
+    } catch (error) {
+      console.error('Error creating batch:', error)
+      alert('Failed to create batch. Please try again.')
+    } finally {
+      setIsCreatingBatch(false)
+    }
   }
 
   if (isLoading) {
@@ -244,23 +299,26 @@ export default function ViewerDashboard() {
 
         {/* Transaction Table */}
         <div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4 gap-4">
             <h2 className="text-2xl font-bold text-gray-900">Transactions</h2>
-            <Button
-              onClick={() => {
-                const printWindow = window.open('', '', 'height=1000,width=1200')
-                if (printWindow && printRef.current) {
-                  printWindow.document.write(printRef.current.outerHTML)
-                  printWindow.document.close()
-                  printWindow.print()
-                }
-              }}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              disabled={transactions.length === 0}
-            >
-              <Printer className="w-4 h-4 mr-2" />
-              Print Report
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => router.push('/batch-management')}
+                variant="outline"
+                className="border-emerald-300 text-emerald-600 hover:bg-emerald-50"
+              >
+                <Archive className="w-4 h-4 mr-2" />
+                View Batches
+              </Button>
+              <Button
+                onClick={createBatchAndPrint}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                disabled={transactions.length === 0 || isCreatingBatch}
+              >
+                <Printer className="w-4 h-4 mr-2" />
+                {isCreatingBatch ? 'Creating Batch...' : 'Print Report'}
+              </Button>
+            </div>
           </div>
           <ViewerTransactionTable transactions={transactions} />
         </div>
@@ -272,6 +330,8 @@ export default function ViewerDashboard() {
           ref={printRef}
           transactions={transactions}
           entryUserEmail={selectedEntryUserEmail}
+          logo={null}
+          batchId={batchId || undefined}
         />
       </div>
     </div>

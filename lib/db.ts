@@ -58,6 +58,28 @@ export async function initDb() {
       FOREIGN KEY (viewerId) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (entryUserId) REFERENCES users(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS transaction_batches (
+      id TEXT PRIMARY KEY,
+      viewerId TEXT NOT NULL,
+      entryUserId TEXT NOT NULL,
+      batchName TEXT,
+      transactionCount INTEGER DEFAULT 0,
+      totalAmount REAL DEFAULT 0,
+      appliedFilters TEXT,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (viewerId) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (entryUserId) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS batch_transactions (
+      id TEXT PRIMARY KEY,
+      batchId TEXT NOT NULL,
+      transactionId TEXT NOT NULL,
+      transactionData TEXT NOT NULL,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (batchId) REFERENCES transaction_batches(id) ON DELETE CASCADE
+    );
   `);
 
   // Add fund column if it doesn't exist (migration for existing databases)

@@ -23,10 +23,11 @@ interface PrintReportProps {
   transactions: Transaction[]
   logo: string | null
   entryUserEmail: string
+  batchId?: string
 }
 
 const PrintReport = forwardRef<HTMLDivElement, PrintReportProps>(
-  ({ transactions, logo, entryUserEmail }, ref) => {
+  ({ transactions, logo, entryUserEmail, batchId }, ref) => {
     const formatCurrency = (amount: number) => {
       return new Intl.NumberFormat('en-PH', {
         style: 'currency',
@@ -81,6 +82,11 @@ const PrintReport = forwardRef<HTMLDivElement, PrintReportProps>(
           <p className="text-sm text-gray-700">
             <span className="font-semibold">Total Records:</span> {transactions.length}
           </p>
+          {batchId && (
+            <p className="text-sm text-gray-700 mt-2 p-2 bg-gray-100 rounded font-mono">
+              <span className="font-semibold">Batch ID:</span> {batchId}
+            </p>
+          )}
         </div>
 
         {/* Transactions Table */}
